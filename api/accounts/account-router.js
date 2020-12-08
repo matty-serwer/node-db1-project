@@ -51,7 +51,6 @@ const validateAccountId = async (req, res, next) => {
  } catch {
     res.status(500).json({ message: "Server error finding account" });
  }
-  
 }
 
 router.put("/:id", validateAccountId, validateAccount, async (req, res) => {
@@ -70,8 +69,11 @@ router.put("/:id", validateAccountId, validateAccount, async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateAccountId, async (req, res) => {
   try {
+    const { id } = req.params;
+    await Account.delete(id);
+    res.status(200).json({ message: `Successfully deleted account with id: ${id}` })
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
